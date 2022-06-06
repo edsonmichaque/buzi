@@ -9,7 +9,7 @@ import (
 	"text/template"
 
 	"github.com/edsonmichaque/buzi/templates"
-	"github.com/edsonmichaque/go-openapi/oas3"
+	"github.com/edsonmichaque/umbeluzi/types"
 )
 
 type Def struct {
@@ -42,7 +42,7 @@ type OperationDef struct {
 	Summary     string
 	Method      string
 	Path        string
-	Params      []oas3.Parameter
+	Params      []types.Parameter
 }
 
 type Option struct {
@@ -50,7 +50,7 @@ type Option struct {
 	Value interface{}
 }
 
-func NewOperationsDef(spec *oas3.Spec, o []Option) ([]OperationDef, error) {
+func NewOperationsDef(spec *types.Spec, o []Option) ([]OperationDef, error) {
 	operationsDef := make([]OperationDef, 0)
 
 	for path, pathItem := range spec.Paths {
@@ -71,7 +71,7 @@ func NewOperationsDef(spec *oas3.Spec, o []Option) ([]OperationDef, error) {
 	return operationsDef, nil
 }
 
-func NewModelsDef(spec *oas3.Spec, o []Option) ([]ModelDef, error) {
+func NewModelsDef(spec *types.Spec, o []Option) ([]ModelDef, error) {
 	models := make([]ModelDef, 0)
 
 	for name, _ := range spec.Components.Schemas {
@@ -85,7 +85,7 @@ func NewModelsDef(spec *oas3.Spec, o []Option) ([]ModelDef, error) {
 	return models, nil
 }
 
-func NewDef(spec *oas3.Spec) (*Def, error) {
+func NewDef(spec *types.Spec) (*Def, error) {
 	operationsDef, err := NewOperationsDef(spec, nil)
 	if err != nil {
 		return nil, err
