@@ -2,7 +2,7 @@ package python
 
 import (
 	"github.com/edsonmichaque/buzi/codegen"
-	"github.com/edsonmichaque/buzi/stringutil"
+	"github.com/edsonmichaque/buzi/textutil"
 )
 
 type provider struct {
@@ -33,8 +33,8 @@ func (r provider) GenerateModels(d codegen.Def, params codegen.OptionSet) ([]cod
 		renderModelsParams := codegen.RenderModelParams{
 			Template:  "python/model.py.tmpl",
 			TargetDir: "lib/model",
-			PathFunc:  stringutil.ToSnakeCase,
-			NameFunc:  stringutil.ToPascalCase,
+			PathFunc:  textutil.ToSnakeCase,
+			NameFunc:  textutil.ToPascalCase,
 			Extension: r.Extension,
 		}
 
@@ -54,8 +54,8 @@ func (r provider) GenerateOperations(d codegen.Def, params codegen.OptionSet) ([
 		Template:   "python/client.py.tmpl",
 		TargetFile: "client",
 		TargetDir:  "lib",
-		PathFunc:   stringutil.ToSnakeCase,
-		NameFunc:   stringutil.ToSnakeCase,
+		PathFunc:   textutil.ToSnakeCase,
+		NameFunc:   textutil.ToSnakeCase,
 		Extension:  r.Extension,
 	}
 

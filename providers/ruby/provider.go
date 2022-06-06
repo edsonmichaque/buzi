@@ -2,7 +2,7 @@ package ruby
 
 import (
 	"github.com/edsonmichaque/buzi/codegen"
-	"github.com/edsonmichaque/buzi/stringutil"
+	"github.com/edsonmichaque/buzi/textutil"
 )
 
 type provider struct{}
@@ -33,8 +33,8 @@ func (r provider) GenerateModels(def codegen.Def, params codegen.OptionSet) ([]c
 		renderModelsParams := codegen.RenderModelParams{
 			Template:  "ruby/model.rb.tmpl",
 			TargetDir: "lib/model",
-			PathFunc:  stringutil.ToSnakeCase,
-			NameFunc:  stringutil.ToPascalCase,
+			PathFunc:  textutil.ToSnakeCase,
+			NameFunc:  textutil.ToPascalCase,
 			Extension: "rb",
 		}
 
@@ -54,8 +54,8 @@ func (r provider) GenerateOperations(def codegen.Def, params codegen.OptionSet) 
 		Template:   "ruby/client.rb.tmpl",
 		TargetFile: "client",
 		TargetDir:  "lib",
-		PathFunc:   stringutil.ToSnakeCase,
-		NameFunc:   stringutil.ToSnakeCase,
+		PathFunc:   textutil.ToSnakeCase,
+		NameFunc:   textutil.ToSnakeCase,
 		Extension:  "rb",
 	}
 

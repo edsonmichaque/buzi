@@ -7,10 +7,10 @@ import (
 	"strings"
 	"text/template"
 
-	boa "github.com/edsonmichaque/buzi"
-	"github.com/edsonmichaque/buzi/stringutil"
+	"github.com/edsonmichaque/buzi"
 	"github.com/edsonmichaque/buzi/templates"
-	"github.com/edsonmichaque/go-openapi/oas3"
+	"github.com/edsonmichaque/buzi/textutil"
+	"github.com/edsonmichaque/umbeluzi/types"
 )
 
 type provider struct{}
@@ -19,7 +19,7 @@ func New() *provider {
 	return &provider{}
 }
 
-func (p provider) Generate(spec *oas3.Spec) (*boa.SDK, error) {
+func (p provider) Generate(spec *types.Spec) (interface{}, error) {
 	models, err := p.GenerateModels(spec)
 	if err != nil {
 		return nil, err
@@ -34,10 +34,10 @@ func (p provider) Generate(spec *oas3.Spec) (*boa.SDK, error) {
 		models[k] = v
 	}
 
-	return &boa.SDK{Files: models}, nil
+	return &buzi.SDK{Files: models}, nil
 }
 
-func (p provider) GenerateModels(spec *oas3.Spec) (map[string][]byte, error) {
+func (p provider) GenerateModels(spec *types.Spec) (map[string][]byte, error) {
 
 	models := make(map[string][]byte)
 
@@ -68,13 +68,13 @@ func (p provider) GenerateModels(spec *oas3.Spec) (map[string][]byte, error) {
 			return nil, err
 		}
 
-		models[fmt.Sprintf("go/models/%s.go", boa.ToSnakeCase(name))] = buf.Bytes()
+		models[fmt.Sprintf("go/models/%s.go", textutil.ToSnakeCase(name))] = buf.Bytes()
 	}
 
 	return models, nil
 }
 
-func (p provider) GenerateOperations(spec *oas3.Spec) (map[string][]byte, error) {
+func (p provider) GenerateOperations(spec *types.Spec) (map[string][]byte, error) {
 
 	files := make(map[string][]byte)
 
@@ -84,7 +84,7 @@ func (p provider) GenerateOperations(spec *oas3.Spec) (map[string][]byte, error)
 
 		for method, op := range pathItem.Operations() {
 			newOp := operation{
-				Name:        stringutil.ToPascalCase(op.OperationID),
+				Name:        textutil.ToPascalCase(op.OperationID),
 				Description: op.Description,
 				Method:      method,
 				Path:        path,
@@ -95,9 +95,9 @@ func (p provider) GenerateOperations(spec *oas3.Spec) (map[string][]byte, error)
 				if pr.In == "path" {
 
 					newParam := param{
-						Name:         stringutil.ToPascalCase(pr.Name),
+						Name:         textutil.ToPascalCase(pr.Name),
 						Type:         "path",
-						OriginalName: stringutil.ToCamelCase(pr.Name),
+						OriginalName: textutil.ToCamelCase(pr.Name),
 						Template:     "{" + pr.Name + "}",
 						Schema:       *pr.Schema,
 					}
@@ -105,7 +105,7 @@ func (p provider) GenerateOperations(spec *oas3.Spec) (map[string][]byte, error)
 					newOp.PathParams = append(newOp.PathParams, newParam)
 				} else if pr.In == "query" {
 					newParam := param{
-						Name:         stringutil.ToPascalCase(pr.Name),
+						Name:         textutil.ToPascalCase(pr.Name),
 						Type:         "query",
 						OriginalName: pr.Name,
 						Template:     "{" + pr.Name + "}",
@@ -115,7 +115,7 @@ func (p provider) GenerateOperations(spec *oas3.Spec) (map[string][]byte, error)
 					newOp.QueryParams = append(newOp.QueryParams, newParam)
 				} else if pr.In == "header" {
 					newParam := param{
-						Name:         stringutil.ToPascalCase(pr.Name),
+						Name:         textutil.ToPascalCase(pr.Name),
 						Type:         "header",
 						OriginalName: pr.Name,
 						Template:     "{" + pr.Name + "}",
@@ -125,7 +125,7 @@ func (p provider) GenerateOperations(spec *oas3.Spec) (map[string][]byte, error)
 					newOp.HeaderParams = append(newOp.HeaderParams, newParam)
 				} else if pr.In == "cookie" {
 					newParam := param{
-						Name:         stringutil.ToPascalCase(pr.Name),
+						Name:         textutil.ToPascalCase(pr.Name),
 						Type:         "cookie",
 						OriginalName: pr.Name,
 						Template:     "{" + pr.Name + "}",
@@ -253,10 +253,10 @@ type param struct {
 	Type         string
 	OriginalName string
 	Template     string
-	Schema       oas3.Schema
+	Schema       types.Schema
 }
 
-func DetectType(s oas3.Schema) string {
+func DetectType(s types.Schema) string {
 	if s.SchemaValue.Type == "string" {
 		return "string"
 	}
@@ -280,7 +280,7 @@ func DetectType(s oas3.Schema) string {
 	return "interface{}"
 }
 
-func ConvertToString(variable string, s oas3.Schema) string {
+func ConvertToString(variable string, s types.Schema) string {
 	kind := DetectType(s)
 
 	switch kind {
@@ -295,11 +295,11 @@ func ConvertToString(variable string, s oas3.Schema) string {
 	return fmt.Sprintf("string(%s)", variable)
 }
 
-func Functions(o oas3.Spec) []Function {
+func Functions(o types.Spec) []Function {
 	return nil
 }
 
-func SchemaToModel(propertyName string, propertyValue oas3.Schema) Types {
+func SchemaToModel(propertyName string, propertyValue types.Schema) Types {
 	newType := Types{}
 
 	switch propertyValue.Type {
@@ -317,7 +317,7 @@ func SchemaToModel(propertyName string, propertyValue oas3.Schema) Types {
 			newScalar.Type = "int"
 		}
 
-		if stringutil.Contains(propertyValue.Required, propertyName) {
+		if textutil.Contains(propertyValue.Required, propertyName) {
 			newScalar.Type = "*" + newScalar.Type
 		}
 
@@ -337,7 +337,7 @@ func SchemaToModel(propertyName string, propertyValue oas3.Schema) Types {
 			newScalar.Type = "float"
 		}
 
-		if stringutil.Contains(propertyValue.Required, propertyName) {
+		if textutil.Contains(propertyValue.Required, propertyName) {
 			newScalar.Type = "*" + newScalar.Type
 		}
 
@@ -349,7 +349,7 @@ func SchemaToModel(propertyName string, propertyValue oas3.Schema) Types {
 			Tag:  propertyName,
 		}
 
-		if stringutil.Contains(propertyValue.Required, propertyName) {
+		if textutil.Contains(propertyValue.Required, propertyName) {
 			newScalar.Type = "*" + newScalar.Type
 		}
 
@@ -361,7 +361,7 @@ func SchemaToModel(propertyName string, propertyValue oas3.Schema) Types {
 			Tag:  propertyName,
 		}
 
-		if stringutil.Contains(propertyValue.Required, propertyName) {
+		if textutil.Contains(propertyValue.Required, propertyName) {
 			newScalar.Type = "*" + newScalar.Type
 		}
 
@@ -383,7 +383,7 @@ func SchemaToModel(propertyName string, propertyValue oas3.Schema) Types {
 	return newType
 }
 
-func Models(spec *oas3.Spec) []Types {
+func Models(spec *types.Spec) []Types {
 	types := make([]Types, 0)
 
 	for schemaName, schemaValue := range spec.Components.Schemas {
