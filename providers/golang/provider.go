@@ -68,7 +68,7 @@ func (p provider) GenerateModels(spec *types.Spec) (map[string][]byte, error) {
 			return nil, err
 		}
 
-		models[fmt.Sprintf("go/models/%s.go", textutil.ToSnakeCase(name))] = buf.Bytes()
+		models[fmt.Sprintf("go/models/%s.go", textutil.SnakeCase(name))] = buf.Bytes()
 	}
 
 	return models, nil
@@ -97,7 +97,7 @@ func (p provider) GenerateOperations(spec *types.Spec) (map[string][]byte, error
 					newParam := param{
 						Name:         textutil.ToPascalCase(pr.Name),
 						Type:         "path",
-						OriginalName: textutil.ToCamelCase(pr.Name),
+						OriginalName: textutil.CamelCase(pr.Name),
 						Template:     "{" + pr.Name + "}",
 						Schema:       *pr.Schema,
 					}

@@ -33,7 +33,7 @@ func (r provider) GenerateModels(d codegen.Def, params codegen.OptionSet) ([]cod
 		renderModelsParams := codegen.RenderModelParams{
 			Template:  "python/model.py.tmpl",
 			TargetDir: "lib/model",
-			PathFunc:  textutil.ToSnakeCase,
+			PathFunc:  textutil.SnakeCase,
 			NameFunc:  textutil.ToPascalCase,
 			Extension: r.Extension,
 		}
@@ -54,8 +54,8 @@ func (r provider) GenerateOperations(d codegen.Def, params codegen.OptionSet) ([
 		Template:   "python/client.py.tmpl",
 		TargetFile: "client",
 		TargetDir:  "lib",
-		PathFunc:   textutil.ToSnakeCase,
-		NameFunc:   textutil.ToSnakeCase,
+		PathFunc:   textutil.SnakeCase,
+		NameFunc:   textutil.SnakeCase,
 		Extension:  r.Extension,
 	}
 

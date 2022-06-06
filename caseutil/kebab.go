@@ -5,7 +5,7 @@ import (
 	"unicode"
 )
 
-func ToSnakeCase(s string) string {
+func ToKebab(s string) string {
 	var buf bytes.Buffer
 
 	for i, c := range s {
@@ -18,11 +18,11 @@ func ToSnakeCase(s string) string {
 		} else if !unicode.IsLetter(c) && !unicode.IsNumber(c) {
 			previousRune := rune(s[i-1])
 			if unicode.IsLetter(previousRune) || unicode.IsNumber(previousRune) {
-				buf.WriteRune('_')
+				buf.WriteRune('-')
 			}
 		} else if unicode.IsLetter(c) {
 			if unicode.IsUpper(c) {
-				buf.WriteRune(unicode.ToLower('_'))
+				buf.WriteRune(unicode.ToLower('-'))
 			}
 
 			buf.WriteRune(unicode.ToLower(c))

@@ -5,11 +5,11 @@ import (
 	"unicode"
 )
 
-func ToCamelCase(s string) string {
-	return toCamelCase(s, false)
+func ToCamel(s string) string {
+	return camel(s, false)
 }
 
-func toCamelCase(s string, firstUpperCase bool) string {
+func camel(s string, startsWithUpper bool) string {
 	var buf bytes.Buffer
 
 	setUpperCase := false
@@ -20,7 +20,7 @@ func toCamelCase(s string, firstUpperCase bool) string {
 				continue
 			}
 
-			if firstUpperCase {
+			if startsWithUpper {
 				buf.WriteRune(unicode.ToUpper(c))
 			} else {
 				buf.WriteRune(unicode.ToLower(c))
