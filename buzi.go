@@ -2,6 +2,7 @@ package boa
 
 import (
 	"github.com/edsonmichaque/buzi/codegen"
+	"github.com/edsonmichaque/umbeluzi/types"
 )
 
 type Generator interface {
@@ -9,22 +10,6 @@ type Generator interface {
 	Schema() codegen.ParamsSchema
 }
 
-// type Renderer interface {
-// 	Render(codegen.Def, []codegen.Option) (map[string][]byte, error)
-// }
-
-// type ConfigGenerator interface {
-// 	GenerateConfig(*oas3.Spec, []codegen.Option) (*codegen.ConfigDef, error)
-// }
-
-// type ModelsGenerator interface {
-// 	GenerateModels(*oas3.Spec, []codegen.Option) ([]codegen.ModelDef, error)
-// }
-
-// type OperationsGenerator interface {
-// 	GenerateOperations(*oas3.Spec, []codegen.Option) ([]codegen.OperationDef, error)
-// }
-
-// type TypeMapper interface {
-// 	Map(string, string) (*string, error)
-// }
+type Gen interface {
+	Generate(types.Spec) ([]byte, error)
+}

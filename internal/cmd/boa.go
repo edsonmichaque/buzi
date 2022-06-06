@@ -13,7 +13,7 @@ import (
 	"github.com/edsonmichaque/buzi/readers"
 	"github.com/edsonmichaque/buzi/readers/http"
 	"github.com/edsonmichaque/buzi/readers/local"
-	"github.com/edsonmichaque/go-openapi/oas3"
+	"github.com/edsonmichaque/umbeluzi/types"
 	"github.com/spf13/cobra"
 )
 
@@ -76,11 +76,11 @@ func New() *Command {
 
 			newYamlParser := yamlParser.New(reader)
 
-			spec, err := oas3.New(newYamlParser)
+			spec, err := types.New(newYamlParser)
 			if err != nil {
 				newJsonParser := jsonParser.New(reader)
 
-				spec, err = oas3.New(newJsonParser)
+				spec, err = types.New(newJsonParser)
 				if err != nil {
 					return CmdError{
 						ExitCode: 1,
@@ -90,7 +90,7 @@ func New() *Command {
 			}
 
 			for path, pathItem := range spec.Paths {
-				ctx := oas3.ValidationContext{Path: path}
+				ctx := types.ValidationContext{Path: path}
 				if err := pathItem.Validate(ctx); err != nil {
 					fmt.Println(err.Error())
 				}
