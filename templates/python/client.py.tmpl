@@ -1,0 +1,11 @@
+class Client:
+  {{ range . }}
+  def {{ .Name }}():
+    pass
+  {{ end }}
+
+  def new_request(self):
+    pass
+
+  def send_request(self):
+    pass  

@@ -1,0 +1,44 @@
+{
+  "info": {
+    "license": {
+      "required": true,
+      "denyList": [
+        "GPL-2.0",
+        "GPL-3.0"
+      ]
+    },
+    "title": {
+      "required": true
+    },
+    "description": {
+      "required": true
+    }
+  },
+  "paths": {
+    "summary": {
+      "required": true
+    },
+    "description": {
+      "required": true
+    },
+    "operation": {
+      "operationId": {
+        "required": true,
+        "pattern": "^$"
+      },
+      "tags": {
+        "minItems": 1,
+        "maxItems": 2,
+        "minLength": 2,
+        "maxLength": 2,
+        "pattern": "^$"
+      },
+      "summary": {
+        "required": true
+      },
+      "description": {
+        "required": true
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+module OpenAPI
+    class Client
+
+        {{ range . }}
+        def {{ .Name }}()
+        end
+        {{ end }}
+
+        def new_request()
+        end
+
+        def send_request()
+        end
+    end
+end
