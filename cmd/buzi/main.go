@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/edsonmichaque/buzi/generators/golang"
+	"github.com/edsonmichaque/buzi/generators/python"
 	"github.com/edsonmichaque/buzi/types"
 	"gopkg.in/yaml.v3"
 )
@@ -36,7 +36,7 @@ func main() {
 		"package": "buzi",
 	}
 
-	pipeline := golang.Pipeline()
+	pipeline := python.Pipeline()
 
 	files := make([]types.File, 0)
 	for _, p := range pipeline {
