@@ -1,0 +1,25 @@
+{
+  "operations": {
+    "CreateUser": {
+      "input": {
+        "ref": "CreateUserInput"
+      },
+      "output": {
+        "ref": "CreateuserOutput"
+      }
+    },
+    "ListUsers": {
+      "output": {
+        "ref": "ListUsersOutput"
+      }
+    }
+  },
+  "types": {
+    "CreateUserInput": {
+      "type": "int"
+    },
+    "CreateUserOutput": {
+      "type": "int"
+    }
+  }
+}

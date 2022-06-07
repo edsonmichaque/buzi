@@ -1,0 +1,42 @@
+operations:
+  CreateUser:
+    http:
+      method: POST
+    input: 
+      ref: CreateUserInput
+    output: 
+      ref: CreateuserOutput
+  ListUsers:
+    output:
+      ref: ListUsersOutput
+
+types: 
+  CreateUserInput:
+    type: object
+    properties:
+      a:
+        type: int
+      b:
+        type: int
+  CreateUserOutput: 
+    type: object
+    properties:
+      name:
+        type: string
+      age:
+        type: int
+  ListUsersOutput:
+    type: object
+    properties:
+      id:
+        type: int
+      name:
+        type: string
+      age:
+        type: int
+      list:
+        type: array
+        items:
+          type: int 
+  ListUsersInput:
+    type: int
