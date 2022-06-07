@@ -1,7 +1,6 @@
 package types
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -67,10 +66,6 @@ type Authorization struct {
 }
 
 type BasicAuth struct{}
-
-var (
-	ErrNotImplemented = errors.New("buzi: not implemented")
-)
 
 type File struct {
 	Path    string
