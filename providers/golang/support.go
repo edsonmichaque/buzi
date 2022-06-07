@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/edsonmichaque/buzi"
+	"github.com/edsonmichaque/buzi/types"
 )
 
 type support struct {
@@ -15,7 +16,7 @@ type support struct {
 	contributingTemplate string
 }
 
-func (m support) Apply(params map[string]string, manifest *buzi.Manifest) ([]buzi.File, error) {
+func (m support) Apply(params map[string]string, manifest *types.Manifest) ([]types.File, error) {
 	mn := *manifest
 
 	if _, ok := params[ParamModule]; !ok {
@@ -32,7 +33,7 @@ func (m support) Apply(params map[string]string, manifest *buzi.Manifest) ([]buz
 		return nil, err
 	}
 
-	files := []buzi.File{
+	files := []types.File{
 		{
 			Path:    "go.mod",
 			Content: gomod,

@@ -3,94 +3,19 @@ package buzi
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"html/template"
 	"io"
 	"io/fs"
 	"unicode"
+
+	"github.com/edsonmichaque/buzi/types"
 )
 
 type Generator interface {
-	Apply(map[string]string, *Manifest) ([]File, error)
+	Apply(map[string]string, *types.Manifest) ([]types.File, error)
 }
 
-type Metadata struct {
-	BaseURL  string `json:"base_url,omitempty" yaml:"base_url,omitempty"`
-	Name     string `json:"name,omitempty" yaml:"name,omitempty"`
-	FullName string `json:"full_name,omitempty" yaml:"full_name,omitempty"`
-	UID      string `json:"uid,omitempty" yaml:"uid,omitempty"`
-}
-
-type Manifest struct {
-	Metadata   Metadata               `json:"metadata" yaml:"metadata"`
-	Operations map[string]Operation   `json:"operations,omitempty" yaml:"operations,omitempty"`
-	Types      map[string]*Definition `json:"types,omitempty" yaml:"types,omitempty"`
-	Params     map[string]string      `json:"-" yaml:"-"`
-}
-
-type Operation struct {
-	Name   string        `json:"name" yaml:"name"`
-	Http   *Http         `json:"http,omitempty" yaml:"http,omitempty"`
-	Input  *Definition   `json:"input,omitempty" yaml:"input,omitempty"`
-	Output *Definition   `json:"output,omitempty" yaml:"output,omitempty"`
-	Errors []*Definition `json:"errors,omitempty" yaml:"errors,omitempty"`
-}
-
-type DefinitionValue struct {
-	Type       string                 `json:"type" yaml:"type"`
-	Format     string                 `json:"format" yaml:"format"`
-	Properties map[string]*Definition `json:"properties,omitempty" yaml:"properties,omitempty"`
-	Items      *Definition            `json:"items,omitempty" yaml:"items,omitempty"`
-	Error      *Error                 `json:"error,omitempty" yaml:"error,omitempty"`
-	Exception  bool                   `json:"exception,omitempty" yaml:"exception,omitempty"`
-	Sensitive  bool                   `json:"sensitive,omitempty" yaml:"sensitive,omitempty"`
-	Fault      bool                   `json:"fault,omitempty" yaml:"fault,omitempty"`
-	Pattern    string                 `json:"pattern,omitempty" yaml:"pattern,omitempty"`
-}
-
-type Error struct {
-	StatusCode int `json:"status_code" yaml:"status_code"`
-}
-
-type Reference struct {
-	Ref string `json:"ref" yaml:"ref"`
-}
-
-type Definition struct {
-	Value *DefinitionValue `json:",inline" yaml:",inline"`
-	Ref   *Reference       `json:",inline" yaml:",inline"`
-}
-
-type Http struct {
-	Method        string        `json:"method" yaml:"method"`
-	RequestURI    string        `json:"request_uri" yaml:"request_uri"`
-	Authorization Authorization `json:"auth" yaml:"auth"`
-}
-
-type Authorization struct {
-	Basic *struct {
-		User     string
-		Password string
-	}
-	Bearer bool
-}
-
-type BasicAuth struct{}
-
-var (
-	ErrNotImplemented = errors.New("buzi: not implemented")
-)
-
-type File struct {
-	Path    string
-	Content []byte
-}
-
-func (f File) String() string {
-	return fmt.Sprintf("Path: %s, Content: %s", f.Path, string(f.Content))
-}
-
-func Render(templates fs.FS, tpl string, m *Manifest) ([]byte, error) {
+func Render(templates fs.FS, tpl string, m *types.Manifest) ([]byte, error) {
 	f, err := templates.Open(tpl)
 	if err != nil {
 		return nil, err
@@ -129,11 +54,11 @@ var FuncMap = template.FuncMap{
 	"titlecase": titleCase,
 }
 
-func IsObj(k Definition) bool {
+func IsObj(k types.Definition) bool {
 	return k.Value != nil && k.Value.Type == "object"
 }
 
-func IsScalar(k Definition) bool {
+func IsScalar(k types.Definition) bool {
 	if k.Value != nil {
 		return k.Value.Type != "object" && k.Value.Type != "array"
 	}
@@ -141,19 +66,19 @@ func IsScalar(k Definition) bool {
 	return false
 }
 
-func IsRef(k Definition) bool {
+func IsRef(k types.Definition) bool {
 	return k.Ref != nil
 }
 
-func GetRef(k Definition) string {
+func GetRef(k types.Definition) string {
 	return k.Ref.Ref
 }
 
-func GetKind(k Definition) string {
+func GetKind(k types.Definition) string {
 	return k.Value.Type
 }
 
-func IsArray(k Definition) bool {
+func IsArray(k types.Definition) bool {
 	if k.Value != nil {
 		return k.Value.Type == "array"
 	}
@@ -161,8 +86,8 @@ func IsArray(k Definition) bool {
 	return false
 }
 
-func Props(d Definition) map[string]*Definition {
-	props := map[string]*Definition{}
+func Props(d types.Definition) map[string]*types.Definition {
+	props := map[string]*types.Definition{}
 	if d.Value != nil {
 		for name, kind := range d.Value.Properties {
 			if kind.Value != nil {
@@ -174,8 +99,8 @@ func Props(d Definition) map[string]*Definition {
 	return props
 }
 
-func Refs(d Definition) map[string]*Definition {
-	props := map[string]*Definition{}
+func Refs(d types.Definition) map[string]*types.Definition {
+	props := map[string]*types.Definition{}
 	if d.Value != nil {
 		for name, kind := range d.Value.Properties {
 			if kind.Ref != nil {
@@ -252,7 +177,7 @@ func Require(params map[string]string, list ...string) error {
 	return nil
 }
 
-func SetParams(mn *Manifest, p map[string]string) {
+func SetParams(mn *types.Manifest, p map[string]string) {
 	if mn.Params == nil {
 		mn.Params = p
 	}

@@ -1,6 +1,6 @@
 package ruby
 
-import "github.com/edsonmichaque/buzi"
+import "github.com/edsonmichaque/buzi/types"
 
 type support struct {
 	makefileTemplate     string
@@ -10,8 +10,8 @@ type support struct {
 	contributingTemplate string
 }
 
-func (m support) Apply(_ map[string]string, manifest *buzi.Manifest) ([]buzi.File, error) {
-	files := []buzi.File{
+func (m support) Apply(_ map[string]string, manifest *types.Manifest) ([]types.File, error) {
+	files := []types.File{
 		{
 			Path: "go.mod",
 		},

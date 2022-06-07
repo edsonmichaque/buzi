@@ -4,6 +4,7 @@ import (
 	"path"
 
 	"github.com/edsonmichaque/buzi"
+	"github.com/edsonmichaque/buzi/types"
 )
 
 const (
@@ -12,7 +13,7 @@ const (
 
 type operations struct{}
 
-func (m operations) Apply(params map[string]string, manifest *buzi.Manifest) ([]buzi.File, error) {
+func (m operations) Apply(params map[string]string, manifest *types.Manifest) ([]types.File, error) {
 	if err := buzi.Require(params, ParamModule); err != nil {
 		return nil, err
 	}
@@ -24,5 +25,5 @@ func (m operations) Apply(params map[string]string, manifest *buzi.Manifest) ([]
 		return nil, err
 	}
 
-	return []buzi.File{{Path: "client.rb", Content: f}}, nil
+	return []types.File{{Path: "client.rb", Content: f}}, nil
 }
