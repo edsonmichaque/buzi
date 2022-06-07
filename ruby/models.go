@@ -1,7 +1,6 @@
 package ruby
 
 import (
-	"errors"
 	"path"
 
 	"github.com/edsonmichaque/buzi"
@@ -12,15 +11,13 @@ type models struct {
 }
 
 func (m models) Apply(params map[string]string, manifest *buzi.Manifest) ([]buzi.File, error) {
-	mn := *manifest
-
-	if _, ok := params[ParamModule]; !ok {
-		return nil, errors.New("missing param" + ParamModule)
+	if err := buzi.Require(params, ParamModule); err != nil {
+		return nil, err
 	}
 
-	mn.Params = params
+	buzi.SetParams(manifest, params)
 
-	f, err := buzi.Render(templates, path.Join("templates", "model.rb.tpl"), &mn)
+	f, err := buzi.Render(templates, path.Join("templates", "model.rb.tpl"), manifest)
 	if err != nil {
 		return nil, err
 	}

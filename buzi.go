@@ -241,3 +241,19 @@ func snakeCase(s string) string {
 
 	return buf.String()
 }
+
+func Require(params map[string]string, list ...string) error {
+	for _, s := range list {
+		if _, ok := params[s]; !ok {
+			return errors.New("buzi: missing param " + s)
+		}
+	}
+
+	return nil
+}
+
+func SetParams(mn *Manifest, p map[string]string) {
+	if mn.Params == nil {
+		mn.Params = p
+	}
+}
