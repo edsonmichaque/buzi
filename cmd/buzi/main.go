@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/edsonmichaque/buzi"
-	"github.com/edsonmichaque/buzi/golang"
+	"github.com/edsonmichaque/buzi/providers/golang"
 	"gopkg.in/yaml.v3"
 )
 
