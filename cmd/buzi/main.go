@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/edsonmichaque/buzi"
-	"github.com/edsonmichaque/buzi/providers/golang"
+	"github.com/edsonmichaque/buzi/generators/golang"
+	"github.com/edsonmichaque/buzi/types"
 	"gopkg.in/yaml.v3"
 )
 
@@ -26,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var manifest buzi.Manifest
+	var manifest types.Manifest
 	if err := yaml.Unmarshal(buf.Bytes(), &manifest); err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +38,7 @@ func main() {
 
 	pipeline := golang.Pipeline()
 
-	files := make([]buzi.File, 0)
+	files := make([]types.File, 0)
 	for _, p := range pipeline {
 		f, err := p.Apply(params, &manifest)
 		if err != nil {
@@ -55,7 +55,7 @@ func main() {
 	}
 }
 
-func write(files []buzi.File) error {
+func write(files []types.File) error {
 	target := "tmp"
 
 	for _, f := range files {
