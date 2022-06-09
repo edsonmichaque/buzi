@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/edsonmichaque/buzi/generators/python"
+	"github.com/edsonmichaque/buzi/internal/providers/python"
 	"github.com/edsonmichaque/buzi/types"
 	"gopkg.in/yaml.v3"
 )
